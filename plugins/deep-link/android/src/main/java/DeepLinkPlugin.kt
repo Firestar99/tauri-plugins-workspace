@@ -61,11 +61,6 @@ class DeepLinkPlugin(private val activity: Activity): Plugin(activity) {
     }
 
     override fun onNewIntent(intent: Intent) {
-        Log.e("onNewIntent", "Intent: " + intent.toString());
-        Log.e("onNewIntent", "Action: " + intent.action.toString());
-        Log.e("onNewIntent", "data: " + intent.data.toString());
-        Log.e("onNewIntent", "EXTRA_TEXT: " + intent.getStringExtra(Intent.EXTRA_TEXT));
-
         if (intent.action == Intent.ACTION_VIEW) {
             this.currentUrl = intent.data.toString()
             val event = JSObject()
