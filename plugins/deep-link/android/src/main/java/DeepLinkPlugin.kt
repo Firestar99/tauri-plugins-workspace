@@ -54,7 +54,7 @@ class DeepLinkPlugin(private val activity: Activity): Plugin(activity) {
 
         val intent = activity.intent
 
-        if (intent.action == Intent.ACTION_VIEW) {
+        if (intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND) {
             // TODO: check if it makes sense to split up init url and last url
             this.currentUrl = intent.data.toString()
             val event = JSObject()
@@ -67,7 +67,7 @@ class DeepLinkPlugin(private val activity: Activity): Plugin(activity) {
     }
 
     override fun onNewIntent(intent: Intent) {
-        if (intent.action == Intent.ACTION_VIEW) {
+        if (intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND) {
             this.currentUrl = intent.data.toString()
             val event = JSObject()
             event.put("url", this.currentUrl)
