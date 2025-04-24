@@ -8,6 +8,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
+import android.util.Log;
 import app.tauri.Logger
 import app.tauri.annotation.InvokeArg
 import app.tauri.annotation.Command
@@ -53,22 +54,27 @@ class DeepLinkPlugin(private val activity: Activity): Plugin(activity) {
         instance = this
 
         val intent = activity.intent
-
-        if (intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND) {
-            // TODO: check if it makes sense to split up init url and last url
-            this.currentUrl = intent.data.toString()
-            val event = JSObject()
-            event.put("url", this.currentUrl)
-            this.channel?.send(event)
-        }
+        onNewIntent(intent);
 
         super.load(webView)
         this.webView = webView
     }
 
     override fun onNewIntent(intent: Intent) {
-        if (intent.action == Intent.ACTION_VIEW || intent.action == Intent.ACTION_SEND) {
+        Log.e("onNewIntent", "Intent: " + intent.toString());
+        Log.e("onNewIntent", "Action: " + intent.action.toString());
+        Log.e("onNewIntent", "data: " + intent.data.toString());
+        Log.e("onNewIntent", "EXTRA_TEXT: " + intent.getStringExtra(Intent.EXTRA_TEXT));
+
+        if (intent.action == Intent.ACTION_VIEW) {
             this.currentUrl = intent.data.toString()
+            val event = JSObject()
+            event.put("url", this.currentUrl)
+            this.channel?.send(event)
+        }
+
+        if (intent.action == Intent.ACTION_SEND) {
+            this.currentUrl = intent.getStringExtra(Intent.EXTRA_TEXT);
             val event = JSObject()
             event.put("url", this.currentUrl)
             this.channel?.send(event)
